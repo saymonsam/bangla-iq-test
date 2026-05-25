@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>বাংলা IQ Test — আপনার বুদ্ধিমত্তা পরীক্ষা করুন</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS VARIABLES & RESET
+   ============================================================ */
+:root {
+  --void: #020818;
+  --deep: #060d1f;
+  --panel: rgba(8, 20, 50, 0.75);
+  --glass: rgba(15, 35, 80, 0.55);
+  --cyan: #00f5ff;
+  --cyan2: #00c8e8;
+  --violet: #a855f7;
+  --violet2: #7c3aed;
+  --gold: #fbbf24;
+  --green: #10b981;
+  --red: #ef4444;
+  --text: #e2eeff;
+  --muted: #7090b8;
+  --border: rgba(0,245,255,0.18);
+  --border2: rgba(168,85,247,0.22);
+  --glow-c: 0 0 20px rgba(0,245,255,0.45), 0 0 60px rgba(0,245,255,0.15);
+  --glow-v: 0 0 20px rgba(168,85,247,0.5), 0 0 60px rgba(168,85,247,0.18);
+  --glow-g: 0 0 20px rgba(251,191,36,0.5), 0 0 60px rgba(251,191,36,0.2);
+  --font-bn: 'Hind Siliguri', sans-serif;
+  --font-en: 'Orbitron', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-bn);
+  background: var(--void);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+/* ============================================================
+   ANIMATED PARTICLE CANVAS BACKGROUND
+   ============================================================ */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--void);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+#loading-screen.hide { opacity: 0; visibility: hidden; }
+.load-brain {
+  width: 80px;
+  height: 80px;
+  position: relative;
+}
+.load-brain svg { width: 100%; height: 100%; filter: drop-shadow(0 0 16px var(--cyan)); }
+.load-ring {
+  width: 110px; height: 110px;
+  border: 2px solid transparent;
+  border-top-color: var(--cyan);
+  border-right-color: var(--violet);
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  position: absolute;
+  top: -15px; left: -15px;
+}
+.load-ring2 {
+  width: 90px; height: 90px;
+  border: 2px solid transparent;
+  border-bottom-color: var(--violet);
+  border-left-color: var(--cyan);
+  border-radius: 50%;
+  animation: spin 1.8s linear infinite reverse;
+  position: absolute;
+  top: -5px; left: -5px;
+}
+.load-title {
+  font-family: var(--font-bn);
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 2px;
+}
+.load-bar-wrap {
+  width: 240px;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.load-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  border-radius: 4px;
+  animation: loadprog 2.2s ease forwards;
+  box-shadow: var(--glow-c);
+}
+@keyframes loadprog { from { width: 0 } to { width: 100% } }
+.load-text { font-size: 0.85rem; color: var(--muted); letter-spacing: 3px; }
+
+/* ============================================================
+   SHARED UTILITIES
+   ============================================================ */
+.screen { position: relative; z-index: 1; display: none; }
+.screen.active { display: flex; }
+.glass-card {
+  background: var(--glass);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 32px;
+  border-radius: 50px;
+  border: none;
+  font-family: var(--font-bn);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0);
+  transition: background 0.3s;
+}
+.btn:hover::after { background: rgba(255,255,255,0.06); }
+.btn:active { transform: scale(0.97); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--cyan2), var(--violet));
+  color: #fff;
+  box-shadow: var(--glow-c);
+}
+.btn-primary:hover { box-shadow: 0 0 35px rgba(0,245,255,0.6), 0 0 70px rgba(168,85,247,0.3); transform: translateY(-2px); }
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0,245,255,0.2);
+}
+.btn-outline:hover { background: rgba(0,245,255,0.08); box-shadow: var(--glow-c); transform: translateY(-2px); }
+.btn-ghost { background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid rgba(255,255,255,0.08); }
+.btn-ghost:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+.neon-text {
+  color: var(--cyan);
+  text-shadow: 0 0 10px var(--cyan), 0 0 30px rgba(0,245,255,0.4);
+}
+.gradient-text {
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================================
+   LANDING SCREEN
+   ============================================================ */
+#landing-screen {
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+.landing-inner { max-width: 720px; width: 100%; }
+.logo-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.logo-icon {
+  width: 90px; height: 90px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  box-shadow: var(--glow-c);
+  animation: pulseglow 3s ease-in-out infinite;
+}
+.logo-icon svg { width: 50px; height: 50px; filter: drop-shadow(0 0 8px var(--cyan)); }
+@keyframes pulseglow {
+  0%,100% { box-shadow: var(--glow-c); }
+  50% { box-shadow: 0 0 40px rgba(0,245,255,0.7), 0 0 100px rgba(168,85,247,0.3); }
+}
+.site-title {
+  font-family: var(--font-bn);
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  background: linear-gradient(135deg, var(--cyan) 0%, #fff 50%, var(--violet) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.site-sub {
+  font-family: var(--font-en);
+  font-size: 0.75rem;
+  letter-spacing: 4px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.typewriter-wrap {
+  font-size: 1.1rem;
+  color: var(--muted);
+  min-height: 32px;
+  margin-bottom: 40px;
+  font-weight: 400;
+}
+#typewriter { color: var(--cyan); }
+.cursor { animation: blink 0.8s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.stats-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+.stat-chip {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  display: flex; align-items: center; gap: 8px;
+  color: var(--text);
+  backdrop-filter: blur(12px);
+}
+.stat-chip .dot {
+  width: 8px; height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--green);
+}
+@keyframes pulse-dot { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:0.7} }
+.live-count { color: var(--cyan); font-weight: 600; }
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.info-item {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 14px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.info-item:hover { border-color: var(--cyan); box-shadow: var(--glow-c); }
+.info-item .icon { font-size: 1.8rem; margin-bottom: 8px; }
+.info-item .label { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; }
+.info-item .value { font-size: 1rem; font-weight: 600; color: var(--text); }
+.btn-start {
+  padding: 18px 56px;
+  font-size: 1.2rem;
+  border-radius: 60px;
+  background: linear-gradient(135deg, var(--cyan2) 0%, var(--violet) 100%);
+  color: #fff;
+  box-shadow: 0 0 30px rgba(0,245,255,0.4), 0 0 80px rgba(168,85,247,0.25);
+  border: none;
+  font-family: var(--font-bn);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 1px;
+}
+.btn-start::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -60%;
+  width: 40%; height: 200%;
+  background: rgba(255,255,255,0.15);
+  transform: skewX(-20deg);
+  animation: shine 3s ease-in-out infinite;
+}
+@keyframes shine { 0%,100% { left: -60% } 40%,60% { left: 120% } }
+.btn-start:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 0 50px rgba(0,245,255,0.6), 0 0 100px rgba(168,85,247,0.4); }
+.disclaimer { font-size: 0.78rem; color: var(--muted); margin-top: 18px; }
+.dev-credit {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 28px;
+  letter-spacing: 1px;
+  opacity: 0.6;
+}
+.dev-credit span { color: var(--cyan); opacity: 1; font-weight: 600; }
+
+
+/* ============================================================
+   TEST SCREEN
+   ============================================================ */
+#test-screen {
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px 40px;
+}
+/* TOP BAR */
+.test-topbar {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.test-logo { font-size: 1rem; font-weight: 700; }
+.test-logo span { color: var(--cyan); }
+/* CIRCULAR TIMER */
+.timer-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 8px 18px 8px 8px;
+  backdrop-filter: blur(12px);
+}
+.circle-timer {
+  width: 48px; height: 48px;
+  position: relative;
+}
+.circle-timer svg { transform: rotate(-90deg); }
+.timer-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 3; }
+.timer-fg { fill: none; stroke: var(--cyan); stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.5s; }
+.timer-num {
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en);
+  font-size: 0.6rem;
+  color: var(--cyan);
+  font-weight: 700;
+}
+.timer-label { font-size: 1rem; font-weight: 600; font-family: var(--font-en); color: var(--cyan); }
+.timer-wrap.warn { border-color: var(--red); animation: warnanim 0.5s ease-in-out infinite; }
+.timer-wrap.warn .timer-fg { stroke: var(--red); }
+.timer-wrap.warn .timer-label { color: var(--red); }
+.timer-wrap.warn .timer-num { color: var(--red); }
+@keyframes warnanim { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 20px rgba(239,68,68,0.5)} }
+/* PROGRESS */
+.progress-wrap {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 24px;
+}
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.progress-info .q-num { color: var(--text); font-weight: 600; }
+.progress-track {
+  height: 6px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  border-radius: 6px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: var(--glow-c);
+  position: relative;
+}
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 12px; height: 12px;
+  background: var(--cyan);
+  border-radius: 50%;
+  box-shadow: var(--glow-c);
+}
+.progress-dots {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.p-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  transition: all 0.3s;
+  cursor: default;
+}
+.p-dot.answered { background: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 6px rgba(0,245,255,0.6); }
+.p-dot.current { background: var(--violet); border-color: var(--violet); box-shadow: 0 0 6px rgba(168,85,247,0.6); }
+
+/* QUESTION CARD */
+.q-card {
+  width: 100%;
+  max-width: 800px;
+  padding: 36px 32px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.4s ease forwards;
+}
+@keyframes fadeUp { from { opacity:0; transform:translateY(20px) } to { opacity:1; transform:translateY(0) } }
+.q-category {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.72rem;
+  color: var(--violet);
+  background: rgba(168,85,247,0.12);
+  border: 1px solid rgba(168,85,247,0.25);
+  border-radius: 50px;
+  padding: 4px 14px;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.q-number { font-size: 0.78rem; color: var(--muted); margin-bottom: 10px; font-family: var(--font-en); }
+.q-text {
+  font-size: clamp(1.05rem,2.5vw,1.22rem);
+  font-weight: 500;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 28px;
+}
+.q-visual {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  text-align: center;
+  font-family: var(--font-en);
+  font-size: 1.1rem;
+  color: var(--cyan);
+  letter-spacing: 4px;
+  line-height: 2;
+}
+/* OPTIONS */
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media(max-width:520px){ .options-grid { grid-template-columns: 1fr; } }
+.option-btn {
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 16px 18px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-bn);
+  font-size: 0.95rem;
+  color: var(--text);
+  position: relative;
+  overflow: hidden;
+}
+.option-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,245,255,0.06), rgba(168,85,247,0.04));
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.option-btn:hover { border-color: var(--cyan); box-shadow: 0 0 16px rgba(0,245,255,0.2); transform: translateY(-2px); }
+.option-btn:hover::before { opacity: 1; }
+.option-btn.selected { border-color: var(--cyan); background: rgba(0,245,255,0.1); box-shadow: 0 0 20px rgba(0,245,255,0.25); }
+.option-btn.selected::before { opacity: 1; }
+.option-btn.correct { border-color: var(--green); background: rgba(16,185,129,0.12); box-shadow: 0 0 20px rgba(16,185,129,0.25); }
+.option-btn.wrong { border-color: var(--red); background: rgba(239,68,68,0.12); box-shadow: 0 0 20px rgba(239,68,68,0.2); }
+.opt-letter {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-en);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  flex-shrink: 0;
+  transition: all 0.25s;
+}
+.option-btn.selected .opt-letter { background: var(--cyan); color: var(--void); border-color: var(--cyan); box-shadow: var(--glow-c); }
+.option-btn.correct .opt-letter { background: var(--green); color: var(--void); border-color: var(--green); }
+.option-btn.wrong .opt-letter { background: var(--red); color: #fff; border-color: var(--red); }
+/* NAV BUTTONS */
+.nav-row {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.nav-row .btn { min-width: 130px; }
+.q-count-pill {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 8px 20px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-family: var(--font-en);
+  backdrop-filter: blur(12px);
+}
+.q-count-pill span { color: var(--cyan); font-weight: 700; }
+
+/* ============================================================
+   RESULT SCREEN
+   ============================================================ */
+#result-screen {
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
+.result-inner { width: 100%; max-width: 680px; }
+.result-header { text-align: center; margin-bottom: 32px; }
+.result-header h1 {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.iq-display-wrap { display: flex; justify-content: center; margin-bottom: 32px; }
+.iq-circle {
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+}
+.iq-circle svg {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  transform: rotate(-90deg);
+}
+.iq-ring-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 8; }
+.iq-ring-fg {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 2s cubic-bezier(0.4,0,0.2,1), stroke 1s;
+}
+.iq-inner { position: relative; z-index: 1; text-align: center; }
+.iq-number {
+  font-family: var(--font-en);
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
+}
+.iq-label { font-size: 0.78rem; color: var(--muted); margin-top: 4px; letter-spacing: 2px; }
+/* IQ METER BAR */
+.iq-meter { margin-bottom: 32px; }
+.meter-title { font-size: 0.82rem; color: var(--muted); margin-bottom: 10px; text-align: center; }
+.meter-bar-wrap {
+  height: 12px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  position: relative;
+}
+.meter-bar-fill {
+  height: 100%;
+  border-radius: 12px;
+  transition: width 2s cubic-bezier(0.4,0,0.2,1);
+}
+.meter-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+/* RESULT CARD */
+.result-card { padding: 28px 28px; margin-bottom: 24px; }
+.result-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.result-desc { font-size: 0.95rem; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
+.score-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 12px;
+}
+.score-item { text-align: center; padding: 14px 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid rgba(255,255,255,0.07); }
+.score-item .s-val { font-family: var(--font-en); font-size: 1.4rem; font-weight: 700; }
+.score-item .s-lbl { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+/* LEADERBOARD */
+.leaderboard-card { padding: 24px; margin-bottom: 24px; }
+.lb-title { font-size: 1rem; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.lb-title .icon { color: var(--gold); }
+.lb-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: rgba(255,255,255,0.03);
+  transition: background 0.2s;
+}
+.lb-row:hover { background: rgba(255,255,255,0.06); }
+.lb-rank { font-family: var(--font-en); font-weight: 700; font-size: 0.85rem; width: 26px; color: var(--muted); }
+.lb-rank.gold { color: var(--gold); }
+.lb-rank.silver { color: #c0c0c0; }
+.lb-rank.bronze { color: #cd7f32; }
+.lb-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--cyan2), var(--violet2));
+}
+.lb-name { flex: 1; font-size: 0.88rem; }
+.lb-iq { font-family: var(--font-en); font-weight: 700; font-size: 0.88rem; color: var(--cyan); }
+.lb-bar-mini { width: 60px; height: 4px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+.lb-bar-mini-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--violet)); border-radius: 4px; }
+.you-row { border: 1px solid rgba(168,85,247,0.3); background: rgba(168,85,247,0.07) !important; }
+/* ACTION BUTTONS */
+.action-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.btn-fb { background: #1877f2; color: #fff; }
+.btn-fb:hover { background: #166fe5; transform: translateY(-2px); box-shadow: 0 0 20px rgba(24,119,242,0.4); }
+
+/* ============================================================
+   CONFETTI CANVAS
+   ============================================================ */
+#confetti-canvas {
+  position: fixed; inset: 0; pointer-events: none; z-index: 999;
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-size: 0.9rem;
+  color: var(--text);
+  backdrop-filter: blur(20px);
+  z-index: 1000;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--void); }
+::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.25); border-radius: 6px; }
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:600px){
+  .q-card { padding: 22px 18px; }
+  .nav-row { flex-direction: column; }
+  .nav-row .btn { width: 100%; }
+  .q-count-pill { display: none; }
+  .score-breakdown { grid-template-columns: 1fr 1fr; }
+  .test-topbar { gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- BG CANVAS -->
+<canvas id="bg-canvas"></canvas>
+<!-- CONFETTI CANVAS -->
+<canvas id="confetti-canvas"></canvas>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ============================================================
+     LOADING SCREEN
+     ============================================================ -->
+<div id="loading-screen">
+  <div class="load-brain">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M32 8C22 8 14 16 14 26c0 4 1.5 8 4 11l-2 8 8-2c2.5 1.2 5 1.8 8 1.8s5.5-.6 8-1.8l8 2-2-8c2.5-3 4-7 4-11C50 16 42 8 32 8z" stroke="#00f5ff" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M32 14v8M26 20l4 4M38 20l-4 4M22 28h20M24 34c0 3 3 5 8 5s8-2 8-5" stroke="#a855f7" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="26" cy="22" r="2" fill="#00f5ff"/>
+      <circle cx="38" cy="22" r="2" fill="#00f5ff"/>
+    </svg>
+    <div class="load-ring"></div>
+    <div class="load-ring2"></div>
+  </div>
+  <div class="load-title">বাংলা IQ Test</div>
+  <div class="load-bar-wrap"><div class="load-bar"></div></div>
+  <div class="load-text">INITIALIZING...</div>
+</div>
+
+<!-- ============================================================
+     LANDING SCREEN
+     ============================================================ -->
+<div id="landing-screen" class="screen">
+  <div class="landing-inner">
+    <div class="logo-icon">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 8C22 8 14 16 14 26c0 4 1.5 8 4 11l-2 8 8-2c2.5 1.2 5 1.8 8 1.8s5.5-.6 8-1.8l8 2-2-8c2.5-3 4-7 4-11C50 16 42 8 32 8z" stroke="#00f5ff" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M32 14v8M26 20l4 4M38 20l-4 4M22 28h20M24 34c0 3 3 5 8 5s8-2 8-5" stroke="#a855f7" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="26" cy="22" r="2" fill="#00f5ff"/>
+        <circle cx="38" cy="22" r="2" fill="#00f5ff"/>
+      </svg>
+    </div>
+
+    <div class="site-title">বাংলা IQ Test</div>
+    <div class="site-sub">Intelligence Quotient Assessment</div>
+
+    <div class="typewriter-wrap">
+      <span id="typewriter"></span><span class="cursor">|</span>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-chip">
+        <div class="dot"></div>
+        <span>এখন পরীক্ষা দিচ্ছেন: <span class="live-count" id="live-counter">0</span> জন</span>
+      </div>
+      <div class="stat-chip">🏆 <span>মোট পরীক্ষার্থী: <span class="live-count">১,২৪,৫৮৭</span></span></div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="icon">🧠</div>
+        <div class="label">মোট প্রশ্ন</div>
+        <div class="value">২৫টি</div>
+      </div>
+      <div class="info-item">
+        <div class="icon">⏱️</div>
+        <div class="label">সময়সীমা</div>
+        <div class="value">১৫ মিনিট</div>
+      </div>
+      <div class="info-item">
+        <div class="icon">📊</div>
+        <div class="label">বিভাগ</div>
+        <div class="value">৫টি</div>
+      </div>
+      <div class="info-item">
+        <div class="icon">🎯</div>
+        <div class="label">পূর্ণমান</div>
+        <div class="value">২৫ নম্বর</div>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startTest()">
+      🚀 পরীক্ষা শুরু করুন
+    </button>
+    <p class="disclaimer">এই পরীক্ষাটি বিনোদনমূলক উদ্দেশ্যে তৈরি। ফলাফল পেশাদার মনস্তাত্ত্বিক মূল্যায়নের বিকল্প নয়।</p>
+    <p class="dev-credit">developed by <span>Zayn Khan NaYem</span></p>
+  </div>
+</div>
+
+<!-- ============================================================
+     TEST SCREEN
+     ============================================================ -->
+<div id="test-screen" class="screen">
+  <!-- TOP BAR -->
+  <div class="test-topbar">
+    <div class="test-logo">🧠 <span>বাংলা IQ Test</span></div>
+    <div class="timer-wrap" id="timer-wrap">
+      <div class="circle-timer">
+        <svg viewBox="0 0 48 48">
+          <circle class="timer-bg" cx="24" cy="24" r="20"/>
+          <circle class="timer-fg" id="timer-ring" cx="24" cy="24" r="20"
+            stroke-dasharray="125.66"
+            stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-num" id="timer-num">15:00</div>
+      </div>
+      <div class="timer-label" id="timer-display">15:00</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span>প্রশ্ন <span id="q-current" class="q-num">1</span> / <span id="q-total">25</span></span>
+      <span id="progress-pct">0% সম্পন্ন</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="progress-dots" id="progress-dots"></div>
+  </div>
+
+  <!-- QUESTION CARD -->
+  <div class="glass-card q-card" id="question-card">
+    <div class="q-category" id="q-category">🔢 সংখ্যা যুক্তি</div>
+    <div class="q-number" id="q-number">প্রশ্ন ০১</div>
+    <div class="q-text" id="q-text">প্রশ্ন লোড হচ্ছে...</div>
+    <div class="q-visual" id="q-visual" style="display:none"></div>
+    <div class="options-grid" id="options-grid"></div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-row">
+    <button class="btn btn-ghost" id="btn-prev">← পূর্ববর্তী</button>
+    <div class="q-count-pill">
+      <span id="answered-count">0</span> / <span id="total-count">25</span> উত্তর দেওয়া হয়েছে
+    </div>
+    <button class="btn btn-primary" id="btn-next">পরবর্তী →</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     RESULT SCREEN
+     ============================================================ -->
+<div id="result-screen" class="screen">
+  <div class="result-inner">
+    <div class="result-header">
+      <h1 class="gradient-text">আপনার ফলাফল</h1>
+      <p style="color:var(--muted);font-size:0.9rem;">বিশ্লেষণ সম্পন্ন হয়েছে</p>
+    </div>
+
+    <!-- IQ CIRCLE -->
+    <div class="iq-display-wrap">
+      <div class="iq-circle">
+        <svg viewBox="0 0 200 200">
+          <circle class="iq-ring-bg" cx="100" cy="100" r="85"/>
+          <circle class="iq-ring-fg" id="iq-ring-fg" cx="100" cy="100" r="85"
+            stroke-dasharray="534"
+            stroke-dashoffset="534"/>
+        </svg>
+        <div class="iq-inner">
+          <div class="iq-number" id="iq-display" style="color:var(--cyan)">0</div>
+          <div class="iq-label">IQ SCORE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METER -->
+    <div class="iq-meter glass-card" style="padding:20px 24px;margin-bottom:24px;">
+      <div class="meter-title">বুদ্ধিমত্তা স্কেল</div>
+      <div class="meter-bar-wrap">
+        <div class="meter-bar-fill" id="meter-bar" style="width:0%"></div>
+      </div>
+      <div class="meter-labels">
+        <span>৭০</span><span>৮৫</span><span>১০০</span><span>১১৫</span><span>১৩০</span><span>১৪৫+</span>
+      </div>
+    </div>
+
+    <!-- RESULT CARD -->
+    <div class="glass-card result-card">
+      <div class="result-badge" id="result-badge">🏆 ফলাফল</div>
+      <div class="result-desc" id="result-desc">বিশ্লেষণ চলছে...</div>
+      <div class="score-breakdown">
+        <div class="score-item">
+          <div class="s-val" id="res-correct" style="color:var(--green)">0</div>
+          <div class="s-lbl">সঠিক উত্তর</div>
+        </div>
+        <div class="score-item">
+          <div class="s-val" id="res-wrong" style="color:var(--red)">0</div>
+          <div class="s-lbl">ভুল উত্তর</div>
+        </div>
+        <div class="score-item">
+          <div class="s-val" id="res-accuracy" style="color:var(--cyan)">0%</div>
+          <div class="s-lbl">নির্ভুলতা</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div class="glass-card leaderboard-card">
+      <div class="lb-title"><span class="icon">🏆</span> শীর্ষ পরীক্ষার্থী</div>
+      <div id="leaderboard-rows"></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="action-row">
+      <button class="btn btn-fb" onclick="shareOnFacebook()">📘 Facebook শেয়ার</button>
+      <button class="btn btn-primary" onclick="restartTest()">🔄 আবার পরীক্ষা দিন</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   QUESTION BANK (25 questions across 5 categories)
+   ============================================================ */
+const ALL_QUESTIONS = [
+  // ---- NUMBER PATTERNS ----
+  {
+    id: 1, category: "🔢 সংখ্যা প্যাটার্ন",
+    text: "নিচের ধারাটি লক্ষ্য করুন এবং পরবর্তী সংখ্যাটি বলুন:",
+    visual: "2, 4, 8, 16, 32, ?",
+    options: ["48", "56", "64", "72"],
+    answer: 2, // index
+    explanation: "প্রতিটি সংখ্যা দ্বিগুণ হচ্ছে।"
+  },
+  {
+    id: 2, category: "🔢 সংখ্যা প্যাটার্ন",
+    text: "নিচের সিরিজটি সম্পূর্ণ করুন:",
+    visual: "1, 4, 9, 16, 25, ?",
+    options: ["30", "36", "42", "49"],
+    answer: 1,
+    explanation: "পূর্ণবর্গ সংখ্যা: 1², 2², 3², 4², 5², 6² = 36"
+  },
+  {
+    id: 3, category: "🔢 সংখ্যা প্যাটার্ন",
+    text: "ফিবোনাচি ধারায় পরবর্তী সংখ্যা কত?",
+    visual: "1, 1, 2, 3, 5, 8, 13, ?",
+    options: ["18", "19", "20", "21"],
+    answer: 3,
+    explanation: "প্রতিটি সংখ্যা পূর্ববর্তী দুটির যোগফল।"
+  },
+  {
+    id: 4, category: "🔢 সংখ্যা প্যাটার্ন",
+    text: "নিচের ধারায় ? এর মান কত?",
+    visual: "3, 6, 11, 18, 27, ?",
+    options: ["36", "38", "40", "42"],
+    answer: 1,
+    explanation: "পার্থক্য: 3,5,7,9,11 — বেজোড় সংখ্যায় বৃদ্ধি।"
+  },
+  {
+    id: 5, category: "🔢 সংখ্যা প্যাটার্ন",
+    text: "এই সিরিজে কোন সংখ্যাটি বেমানান?",
+    visual: "2, 3, 5, 7, 11, 14, 17",
+    options: ["৩", "৭", "১৪", "১৭"],
+    answer: 2,
+    explanation: "১৪ মৌলিক সংখ্যা নয়, বাকি সব মৌলিক।"
+  },
+  // ---- MATH LOGIC ----
+  {
+    id: 6, category: "➕ গাণিতিক যুক্তি",
+    text: "যদি একটি ঘড়িতে ৩:০০ বাজে, তাহলে মিনিট ও ঘণ্টার কাঁটার মধ্যে কোণ কত ডিগ্রি?",
+    options: ["৬০°", "৯০°", "১২০°", "১৮০°"],
+    answer: 1,
+    explanation: "৩:০০ তে ঘণ্টার কাঁটা 3-এ, মিনিটের কাঁটা 12-এ → 90°"
+  },
+  {
+    id: 7, category: "➕ গাণিতিক যুক্তি",
+    text: "একটি ক্লাসে ছাত্রদের ৪০% ছেলে। মেয়ে ছাত্রের সংখ্যা ৩৬ হলে মোট ছাত্র কতজন?",
+    options: ["৫৪", "৬০", "৭২", "৮০"],
+    answer: 1,
+    explanation: "৬০% মেয়ে = ৩৬ → মোট = ৩৬ ÷ ০.৬ = ৬০"
+  },
+  {
+    id: 8, category: "➕ গাণিতিক যুক্তি",
+    text: "যদি 5 + 3 = 28, 9 + 1 = 810, তাহলে 7 + 3 = ?",
+    options: ["১০", "২১", "৪২১", "৪২১"],
+    options: ["২৮", "৪২১", "২১০", "৩৭"],
+    answer: 1,
+    explanation: "a+b = (a×b)(a+b) → 7×3=21, 7+3=10 → 2110"
+  },
+  {
+    id: 9, category: "➕ গাণিতিক যুক্তি",
+    text: "একটি ট্রেন ৬০ কিমি/ঘন্টায় চললে ২ ঘন্টায় যায়। একই পথ ৪০ কিমি/ঘন্টায় কত সময়ে যাবে?",
+    options: ["২.৫ ঘন্টা", "৩ ঘন্টা", "৩.৫ ঘন্টা", "৪ ঘন্টা"],
+    answer: 1,
+    explanation: "দূরত্ব = ৬০×২ = ১২০ কিমি। সময় = ১২০÷৪০ = ৩ ঘন্টা"
+  },
+  {
+    id: 10, category: "➕ গাণিতিক যুক্তি",
+    text: "যদি একটি সংখ্যার ৩ গুণ থেকে ৭ বিয়োগ করলে ২০ হয়, সংখ্যাটি কত?",
+    options: ["৭", "৮", "৯", "১০"],
+    answer: 2,
+    explanation: "৩x - ৭ = ২০ → ৩x = ২৭ → x = ৯"
+  },
+  // ---- ANALYTICAL REASONING ----
+  {
+    id: 11, category: "🔍 বিশ্লেষণী যুক্তি",
+    text: "সব বিড়াল স্তন্যপায়ী। কিছু স্তন্যপায়ী পানিতে বাস করে। সুতরাং:",
+    options: [
+      "সব বিড়াল পানিতে বাস করে",
+      "কিছু বিড়াল পানিতে বাস করতে পারে",
+      "কোনো বিড়াল পানিতে বাস করে না",
+      "সব স্তন্যপায়ী পানিতে বাস করে"
+    ],
+    answer: 1,
+    explanation: "লজিক্যাল সিলোজিজম: নিশ্চিতভাবে বলা সম্ভব নয়, তবে সম্ভাবনা আছে।"
+  },
+  {
+    id: 12, category: "🔍 বিশ্লেষণী যুক্তি",
+    text: "যদি 'COLD' = 'WARM' এবং 'NIGHT' = 'DAY', তাহলে 'DARK' = ?",
+    options: ["COLD", "BRIGHT", "LIGHT", "SUN"],
+    answer: 2,
+    explanation: "বিপরীত শব্দ: DARK এর বিপরীত LIGHT"
+  },
+  {
+    id: 13, category: "🔍 বিশ্লেষণী যুক্তি",
+    text: "একটি পরিবারে ৬ জন সদস্য। A, B-র বাবা। C, B-র ভাই। D, A-র বাবা। E, D-র স্ত্রী। F, B-র মেয়ে। F-এর দাদা কে?",
+    options: ["A", "B", "D", "E"],
+    answer: 0,
+    explanation: "F এর বাবা B, B এর বাবা A → F এর দাদা A"
+  },
+  {
+    id: 14, category: "🔍 বিশ্লেষণী যুক্তি",
+    text: "যদি January = 7, March = 5, May = 3, তাহলে October = ?",
+    options: ["৬", "৭", "৮", "৯"],
+    answer: 1,
+    explanation: "অক্ষর সংখ্যা: January(7), March(5), May(3), October(7)"
+  },
+  {
+    id: 15, category: "🔍 বিশ্লেষণী যুক্তি",
+    text: "৫টি বাক্স আছে। প্রতিটির মধ্যে ৫টি বাক্স, প্রতিটির মধ্যে আবার ৫টি বাক্স। মোট কতটি বাক্স?",
+    options: ["১২৫", "১৫০", "১৫৫", "১৮০"],
+    answer: 2,
+    explanation: "৫ + ৫×৫ + ৫×৫×৫ = ৫ + ২৫ + ১২৫ = ১৫৫"
+  },
+  // ---- SHAPE / VISUAL PATTERNS ----
+  {
+    id: 16, category: "🔷 আকৃতি যুক্তি",
+    text: "একটি ত্রিভুজের তিনটি কোণের দুটি যথাক্রমে ৪৫° এবং ৬৫°। তৃতীয় কোণটি কত?",
+    options: ["৬০°", "৭০°", "৭৫°", "৮০°"],
+    answer: 1,
+    explanation: "১৮০° - ৪৫° - ৬৫° = ৭০°"
+  },
+  {
+    id: 17, category: "🔷 আকৃতি যুক্তি",
+    text: "একটি ঘনকের কতটি তল, প্রান্ত ও শীর্ষ আছে?",
+    options: [
+      "তল:৪, প্রান্ত:৮, শীর্ষ:৬",
+      "তল:৬, প্রান্ত:১২, শীর্ষ:৮",
+      "তল:৮, প্রান্ত:১২, শীর্ষ:৬",
+      "তল:৬, প্রান্ত:৮, শীর্ষ:১২"
+    ],
+    answer: 1,
+    explanation: "ঘনকে ৬টি তল, ১২টি প্রান্ত এবং ৮টি শীর্ষ আছে।"
+  },
+  {
+    id: 18, category: "🔷 আকৃতি যুক্তি",
+    text: "ধারাটি লক্ষ্য করুন: △ ○ □ △ ○ □ △ ○ ?",
+    options: ["△", "○", "□", "◇"],
+    answer: 2,
+    explanation: "△ ○ □ প্যাটার্ন পুনরাবৃত্তি হচ্ছে।"
+  },
+  {
+    id: 19, category: "🔷 আকৃতি যুক্তি",
+    text: "একটি বৃত্তের ব্যাসার্ধ দ্বিগুণ করলে ক্ষেত্রফল কতগুণ বাড়বে?",
+    options: ["দ্বিগুণ", "তিনগুণ", "চারগুণ", "আটগুণ"],
+    answer: 2,
+    explanation: "ক্ষেত্রফল = πr² → r দ্বিগুণ হলে (2r)² = 4r² → চারগুণ"
+  },
+  {
+    id: 20, category: "🔷 আকৃতি যুক্তি",
+    text: "একটি দাবার বোর্ডে মোট কতটি বর্গক্ষেত্র আছে (শুধু ১×১ নয়, সব আকারের)?",
+    options: ["৬৪", "১২৮", "২০৪", "২৫৬"],
+    answer: 2,
+    explanation: "সূত্র: n(n+1)(2n+1)/6 যেখানে n=8 → ৮×৯×১৭/৬ = ২০৪"
+  },
+  // ---- MEMORY / MIXED ----
+  {
+    id: 21, category: "🧩 মিশ্র বুদ্ধিমত্তা",
+    text: "পৃথিবীর কোন দেশটি সবচেয়ে বেশি ভাষায় কথা বলে?",
+    options: ["ভারত", "চীন", "পাপুয়া নিউ গিনি", "ইন্দোনেশিয়া"],
+    answer: 2,
+    explanation: "পাপুয়া নিউ গিনিতে ৮০০+ ভাষা প্রচলিত।"
+  },
+  {
+    id: 22, category: "🧩 মিশ্র বুদ্ধিমত্তা",
+    text: "এই শব্দ সিরিজে পরবর্তী কোনটি? সোমবার, বুধবার, শুক্রবার, ?",
+    options: ["শনিবার", "রবিবার", "মঙ্গলবার", "বৃহস্পতিবার"],
+    answer: 1,
+    explanation: "একটি বাদ দিয়ে: সোম, বুধ, শুক্র, রবি"
+  },
+  {
+    id: 23, category: "🧩 মিশ্র বুদ্ধিমত্তা",
+    text: "যদি আপনার হাতের কব্জি থেকে মাটি পর্যন্ত দূরত্ব = আপনার উচ্চতার কত ভাগ প্রায়?",
+    options: ["১/৩", "১/৪", "১/৫", "১/৬"],
+    answer: 1,
+    explanation: "ভিট্রুভিয়ান মানুষ অনুযায়ী প্রায় ১/৪ ভাগ।"
+  },
+  {
+    id: 24, category: "🧩 মিশ্র বুদ্ধিমত্তা",
+    text: "একটি ডিজিটাল ঘড়িতে দিনে কতবার '১১:১১' দেখা যায়?",
+    options: ["১ বার", "২ বার", "৪ বার", "৮ বার"],
+    answer: 1,
+    explanation: "AM এবং PM মিলিয়ে দিনে ২ বার।"
+  },
+  {
+    id: 25, category: "🧩 মিশ্র বুদ্ধিমত্তা",
+    text: "৩ বাঁদরের গল্প: একটি বাঁদর দেখে না, একটি শোনে না, একটি বলে না। যদি ৪র্থ বাঁদর যোগ দেয় যে ভাবে না — সে কীভাবে 'মন্দকে প্রতিনিধিত্ব' করে?",
+    options: [
+      "সে মন্দ জানে না",
+      "সে মন্দ এড়িয়ে চলে না",
+      "সে মন্দকে মনে রাখে না",
+      "মন্দকে কাজে পরিণত করে"
+    ],
+    answer: 3,
+    explanation: "গান্ধীর দর্শন: চিন্তা না করলে কর্মেও মন্দ প্রকাশ পায়।"
+  }
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let questions = [];
+let currentQ = 0;
+let answers = {};
+let timerInterval = null;
+let timeLeft = 900; // 15 min
+const TOTAL_TIME = 900;
+let testStartTime = null;
+let testEnded = false;
+
+/* ============================================================
+   PARTICLE BACKGROUND
+   ============================================================ */
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], nodes = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.r = Math.random() * 1.5 + 0.3;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = (Math.random() - 0.5) * 0.3;
+      this.alpha = Math.random() * 0.5 + 0.1;
+      this.color = Math.random() > 0.5 ? '#00f5ff' : '#a855f7';
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.shadowColor = this.color;
+      ctx.shadowBlur = 6;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+  function connectParticles() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 100) {
+          ctx.save();
+          ctx.globalAlpha = (1 - d / 100) * 0.08;
+          ctx.strokeStyle = '#00f5ff';
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    // subtle grid
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0,245,255,0.03)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += 80) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+    for (let y = 0; y < H; y += 80) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+    ctx.restore();
+    particles.forEach(p => { p.update(); p.draw(); });
+    connectParticles();
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loading-screen').classList.add('hide');
+    showScreen('landing-screen');
+    startTypewriter();
+    startLiveCounter();
+    loadSavedState();
+  }, 2400);
+});
+
+/* ============================================================
+   TYPEWRITER EFFECT
+   ============================================================ */
+const phrases = [
+  "আপনার বুদ্ধিমত্তা কতটুকু?",
+  "লজিক, গণিত ও বিশ্লেষণী প্রশ্ন",
+  "বিশ্বমানের IQ টেস্ট বাংলায়",
+  "সেরা ফলাফল পেতে মনোযোগ দিন"
+];
+let phraseIndex = 0, charIndex = 0, isDeleting = false;
+function startTypewriter() {
+  const el = document.getElementById('typewriter');
+  const current = phrases[phraseIndex];
+  if (!isDeleting) {
+    el.textContent = current.substring(0, ++charIndex);
+    if (charIndex === current.length) { isDeleting = true; setTimeout(startTypewriter, 2000); return; }
+  } else {
+    el.textContent = current.substring(0, --charIndex);
+    if (charIndex === 0) { isDeleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; }
+  }
+  setTimeout(startTypewriter, isDeleting ? 50 : 80);
+}
+
+/* ============================================================
+   LIVE COUNTER (fake)
+   ============================================================ */
+function startLiveCounter() {
+  let count = 847 + Math.floor(Math.random() * 400);
+  document.getElementById('live-counter').textContent = count.toLocaleString('bn-BD');
+  setInterval(() => {
+    count += Math.floor(Math.random() * 5) - 2;
+    if (count < 600) count = 600;
+    document.getElementById('live-counter').textContent = count.toLocaleString('bn-BD');
+  }, 3000);
+}
+
+/* ============================================================
+   SCREEN MANAGEMENT
+   ============================================================ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ============================================================
+   LOCAL STORAGE
+   ============================================================ */
+function saveState() {
+  localStorage.setItem('iqtest_answers', JSON.stringify(answers));
+  localStorage.setItem('iqtest_time', timeLeft);
+  localStorage.setItem('iqtest_q', currentQ);
+  localStorage.setItem('iqtest_questions', JSON.stringify(questions.map(q=>q.id)));
+}
+function loadSavedState() {
+  const saved = localStorage.getItem('iqtest_answers');
+  if (saved) {
+    const btn = document.querySelector('.btn-start');
+    btn.innerHTML = '🔄 সংরক্ষিত অগ্রগতি থেকে চালু করুন';
+  }
+}
+function clearState() {
+  localStorage.removeItem('iqtest_answers');
+  localStorage.removeItem('iqtest_time');
+  localStorage.removeItem('iqtest_q');
+  localStorage.removeItem('iqtest_questions');
+}
+
+/* ============================================================
+   START TEST
+   ============================================================ */
+function startTest() {
+  // Shuffle questions
+  questions = [...ALL_QUESTIONS].sort(() => Math.random() - 0.5);
+
+  // Try to restore
+  const savedIds = localStorage.getItem('iqtest_questions');
+  const savedAnswers = localStorage.getItem('iqtest_answers');
+  const savedTime = localStorage.getItem('iqtest_time');
+  const savedQ = localStorage.getItem('iqtest_q');
+
+  if (savedIds && savedAnswers) {
+    const ids = JSON.parse(savedIds);
+    const restored = ids.map(id => ALL_QUESTIONS.find(q => q.id === id)).filter(Boolean);
+    if (restored.length === questions.length) {
+      questions = restored;
+      answers = JSON.parse(savedAnswers);
+      timeLeft = parseInt(savedTime) || TOTAL_TIME;
+      currentQ = parseInt(savedQ) || 0;
+    }
+  } else {
+    answers = {};
+    timeLeft = TOTAL_TIME;
+    currentQ = 0;
+  }
+
+  testEnded = false;
+  testStartTime = Date.now();
+  showScreen('test-screen');
+  document.getElementById('q-total').textContent = questions.length;
+  document.getElementById('total-count').textContent = questions.length;
+  buildProgressDots();
+  renderQuestion();
+  startTimer();
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+function startTimer() {
+  clearInterval(timerInterval);
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    if (testEnded) return;
+    timeLeft--;
+    saveState();
+    updateTimerUI();
+    if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  const str = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  document.getElementById('timer-display').textContent = str;
+  document.getElementById('timer-num').textContent = str;
+
+  // Circular ring
+  const circumference = 125.66;
+  const progress = timeLeft / TOTAL_TIME;
+  const offset = circumference - (circumference * progress);
+  document.getElementById('timer-ring').style.strokeDashoffset = offset;
+
+  const wrap = document.getElementById('timer-wrap');
+  if (timeLeft <= 60) {
+    wrap.classList.add('warn');
+    document.getElementById('timer-ring').style.stroke = '#ef4444';
+  } else {
+    wrap.classList.remove('warn');
+    document.getElementById('timer-ring').style.stroke = '#00f5ff';
+  }
+}
+
+/* ============================================================
+   PROGRESS DOTS
+   ============================================================ */
+function buildProgressDots() {
+  const container = document.getElementById('progress-dots');
+  container.innerHTML = '';
+  questions.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'p-dot';
+    dot.id = `dot-${i}`;
+    container.appendChild(dot);
+  });
+  updateProgressDots();
+}
+function updateProgressDots() {
+  questions.forEach((_, i) => {
+    const dot = document.getElementById(`dot-${i}`);
+    if (!dot) return;
+    dot.className = 'p-dot';
+    if (answers[i] !== undefined) dot.classList.add('answered');
+    if (i === currentQ) dot.classList.add('current');
+  });
+  const answered = Object.keys(answers).length;
+  const pct = Math.round((answered / questions.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '% সম্পন্ন';
+  document.getElementById('q-current').textContent = currentQ + 1;
+  document.getElementById('answered-count').textContent = answered;
+}
+
+/* ============================================================
+   RENDER QUESTION
+   ============================================================ */
+function renderQuestion() {
+  const q = questions[currentQ];
+  const card = document.getElementById('question-card');
+  card.style.animation = 'none';
+  card.offsetHeight; // reflow
+  card.style.animation = 'fadeUp 0.4s ease forwards';
+
+  document.getElementById('q-category').textContent = q.category;
+  document.getElementById('q-number').textContent = `প্রশ্ন ${String(currentQ+1).padStart(2,'0')}`;
+  document.getElementById('q-text').textContent = q.text;
+
+  const visual = document.getElementById('q-visual');
+  if (q.visual) { visual.style.display='block'; visual.textContent = q.visual; }
+  else { visual.style.display='none'; }
+
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    if (answers[currentQ] === i) btn.classList.add('selected');
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(i, btn);
+    grid.appendChild(btn);
+  });
+
+  // Prev/Next — clone to clear all stale listeners
+  const oldPrev = document.getElementById('btn-prev');
+  const newPrev = oldPrev.cloneNode(true);
+  oldPrev.parentNode.replaceChild(newPrev, oldPrev);
+  newPrev.disabled = currentQ === 0;
+  newPrev.addEventListener('click', () => navigate(-1));
+
+  const isLast = currentQ === questions.length - 1;
+  const oldNext = document.getElementById('btn-next');
+  const newNext = oldNext.cloneNode(true);
+  oldNext.parentNode.replaceChild(newNext, oldNext);
+  newNext.textContent = isLast ? '✅ জমা দিন' : 'পরবর্তী →';
+  newNext.addEventListener('click', isLast ? confirmSubmit : () => navigate(1));
+
+  updateProgressDots();
+}
+
+/* ============================================================
+   SELECT ANSWER
+   ============================================================ */
+function selectAnswer(index, btn) {
+  playClickSound();
+  answers[currentQ] = index;
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  btn.querySelector('.opt-letter').style.background = 'var(--cyan)';
+  btn.querySelector('.opt-letter').style.color = 'var(--void)';
+  updateProgressDots();
+  saveState();
+}
+
+/* ============================================================
+   NAVIGATE
+   ============================================================ */
+function navigate(dir) {
+  const next = currentQ + dir;
+  if (next < 0 || next >= questions.length) return;
+  currentQ = next;
+  renderQuestion();
+}
+
+/* ============================================================
+   CONFIRM SUBMIT
+   ============================================================ */
+function confirmSubmit() {
+  const answered = Object.keys(answers).length;
+  const total = questions.length;
+  if (answered < total) {
+    const unanswered = total - answered;
+    if (!confirm(`আপনি এখনও ${unanswered}টি প্রশ্নের উত্তর দেননি। তবুও জমা দিতে চান?`)) return;
+  }
+  submitTest();
+}
+
+/* ============================================================
+   SUBMIT TEST
+   ============================================================ */
+function submitTest() {
+  if (testEnded) return;
+  testEnded = true;
+  clearInterval(timerInterval);
+  clearState();
+
+  // Calculate score
+  let correct = 0;
+  questions.forEach((q, i) => {
+    if (answers[i] === q.answer) correct++;
+  });
+  const total = questions.length;
+  const unanswered = total - Object.keys(answers).length;
+  const wrong = Object.keys(answers).length - correct;
+  const accuracy = Math.round((correct / total) * 100);
+
+  // IQ calculation
+  const score = correct;
+  let iq, level, description, color, badge;
+  if (score <= 5) {
+    iq = 75 + Math.floor(Math.random() * 10);
+    level = "প্রাথমিক পর্যায়"; badge = "🌱";
+    color = "#ef4444";
+    description = "আপনার বুদ্ধিমত্তা প্রাথমিক পর্যায়ে রয়েছে। আরও অনুশীলন করলে আপনার বিশ্লেষণী দক্ষতা উন্নত হবে। নিয়মিত ধাঁধা, গণিত ও পাজল সমাধান করুন।";
+  } else if (score <= 10) {
+    iq = 85 + Math.floor(Math.random() * 10);
+    level = "গড় বুদ্ধিমত্তা"; badge = "📘";
+    color = "#f59e0b";
+    description = "আপনার বুদ্ধিমত্তা গড় পর্যায়ে রয়েছে। আপনি দৈনন্দিন সমস্যা সমাধানে দক্ষ। আরও চেষ্টা করলে উন্নতি সম্ভব।";
+  } else if (score <= 15) {
+    iq = 100 + Math.floor(Math.random() * 15);
+    level = "স্মার্ট চিন্তাবিদ"; badge = "🧠";
+    color = "#00c8e8";
+    description = "আপনি একজন স্মার্ট চিন্তাবিদ! আপনার যুক্তি ও বিশ্লেষণী দক্ষতা গড়ের উপরে। আপনি জটিল সমস্যা সহজে সমাধান করতে পারেন।";
+  } else if (score <= 20) {
+    iq = 120 + Math.floor(Math.random() * 15);
+    level = "উচ্চ বুদ্ধিমত্তা"; badge = "⭐";
+    color = "#a855f7";
+    description = "অসাধারণ! আপনার বুদ্ধিমত্তা উচ্চ পর্যায়ে। আপনি দ্রুত প্যাটার্ন চিনতে পারেন এবং জটিল যুক্তি অনুসরণ করতে সক্ষম।";
+  } else {
+    iq = 135 + Math.floor(Math.random() * 20);
+    level = "প্রতিভাবান মেধাবী"; badge = "🏆";
+    color = "#fbbf24";
+    description = "বিরল প্রতিভা! আপনার বুদ্ধিমত্তা শীর্ষ ২% মানুষের মধ্যে পড়ে। আপনার বিশ্লেষণী ও যুক্তিবাদী চিন্তাশক্তি অসাধারণ। আপনি একজন সত্যিকারের প্রতিভাবান!";
+  }
+
+  // Show result screen
+  showScreen('result-screen');
+
+  // Animate IQ counter
+  animateCounter('iq-display', 0, iq, 2000, color);
+
+  // IQ ring
+  const ring = document.getElementById('iq-ring-fg');
+  const pct = Math.min((iq - 70) / 80, 1);
+  setTimeout(() => {
+    ring.style.stroke = color;
+    ring.style.strokeDashoffset = 534 - (534 * pct);
+    ring.style.filter = `drop-shadow(0 0 8px ${color})`;
+  }, 300);
+
+  // Meter bar
+  const meterPct = Math.min(((iq - 70) / 80) * 100, 100);
+  const meter = document.getElementById('meter-bar');
+  meter.style.background = `linear-gradient(90deg, ${color}, #ffffff50)`;
+  setTimeout(() => { meter.style.width = meterPct + '%'; }, 300);
+
+  // Result card
+  document.getElementById('result-badge').innerHTML = `${badge} ${level}`;
+  document.getElementById('result-badge').style.color = color;
+  document.getElementById('result-desc').textContent = description;
+  document.getElementById('res-correct').textContent = correct;
+  document.getElementById('res-wrong').textContent = wrong + unanswered;
+  document.getElementById('res-accuracy').textContent = accuracy + '%';
+
+  // Leaderboard
+  buildLeaderboard(iq);
+
+  // Confetti for high scores
+  if (score >= 18) setTimeout(launchConfetti, 800);
+
+  // Save to leaderboard
+  const name = "আপনি";
+  const lb = JSON.parse(localStorage.getItem('iq_leaderboard') || '[]');
+  lb.push({ name, iq, date: new Date().toLocaleDateString('bn-BD') });
+  lb.sort((a,b)=>b.iq-a.iq);
+  localStorage.setItem('iq_leaderboard', JSON.stringify(lb.slice(0,10)));
+
+  showToast(`আপনার IQ স্কোর: ${iq}`);
+}
+
+/* ============================================================
+   LEADERBOARD
+   ============================================================ */
+const FAKE_PLAYERS = [
+  {name:"রাহুল আহমেদ", iq:142, emoji:"👨"},
+  {name:"সানজিদা খানম", iq:138, emoji:"👩"},
+  {name:"তামিম ইসলাম", iq:134, emoji:"🧑"},
+  {name:"প্রিয়া দাস", iq:129, emoji:"👩"},
+  {name:"মাহির হাসান", iq:125, emoji:"👦"},
+  {name:"নুসরাত জাহান", iq:121, emoji:"👧"},
+  {name:"ইফতেখার রহিম", iq:118, emoji:"🧔"},
+  {name:"আফরিন সুলতানা", iq:114, emoji:"👩‍🦱"},
+];
+function buildLeaderboard(userIQ) {
+  const allPlayers = [...FAKE_PLAYERS, {name:"আপনি", iq:userIQ, emoji:"🫵", isYou:true}];
+  allPlayers.sort((a,b)=>b.iq-a.iq);
+  const container = document.getElementById('leaderboard-rows');
+  container.innerHTML = '';
+  const rankClasses = ['gold','silver','bronze'];
+  allPlayers.slice(0,8).forEach((p,i) => {
+    const row = document.createElement('div');
+    row.className = 'lb-row' + (p.isYou ? ' you-row' : '');
+    const barW = Math.round(((p.iq - 80) / 80) * 100);
+    row.innerHTML = `
+      <div class="lb-rank ${rankClasses[i]||''}">#${i+1}</div>
+      <div class="lb-avatar">${p.emoji}</div>
+      <div class="lb-name">${p.name}</div>
+      <div class="lb-bar-mini"><div class="lb-bar-mini-fill" style="width:${barW}%"></div></div>
+      <div class="lb-iq">${p.iq}</div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+/* ============================================================
+   ANIMATED COUNTER
+   ============================================================ */
+function animateCounter(id, from, to, dur, color) {
+  const el = document.getElementById(id);
+  el.style.color = color;
+  el.style.textShadow = `0 0 20px ${color}, 0 0 40px ${color}50`;
+  const start = performance.now();
+  function update(now) {
+    const t = Math.min((now - start) / dur, 1);
+    const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+    el.textContent = Math.round(from + (to - from) * ease);
+    if (t < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = [];
+  const colors = ['#00f5ff','#a855f7','#fbbf24','#10b981','#ef4444','#fff'];
+  for (let i = 0; i < 180; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      r: Math.random() * 6 + 3,
+      d: Math.random() * 180 + 20,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      tilt: Math.random() * 10 - 5,
+      tiltAngle: 0,
+      tiltAngleIncrement: Math.random() * 0.1 + 0.04
+    });
+  }
+  let angle = 0, tick = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    angle += 0.01;
+    tick++;
+    pieces.forEach(p => {
+      p.tiltAngle += p.tiltAngleIncrement;
+      p.y += (Math.cos(angle + p.d) + 3 + p.r / 2) / 2;
+      p.x += Math.sin(angle);
+      p.tilt = Math.sin(p.tiltAngle) * 15;
+      ctx.beginPath();
+      ctx.lineWidth = p.r / 2;
+      ctx.strokeStyle = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = 4;
+      ctx.moveTo(p.x + p.tilt + p.r / 4, p.y);
+      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 4);
+      ctx.stroke();
+    });
+    if (tick < 300) requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+}
+
+/* ============================================================
+   SOUND EFFECT (Web Audio API)
+   ============================================================ */
+function playClickSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(800, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.15);
+  } catch(e) {}
+}
+
+/* ============================================================
+   SHARE ON FACEBOOK
+   ============================================================ */
+function shareOnFacebook() {
+  const iq = document.getElementById('iq-display').textContent;
+  const text = encodeURIComponent(`আমি বাংলা IQ Test-এ ${iq} স্কোর পেয়েছি! আপনার স্কোর কত? 🧠`);
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
+}
+
+/* ============================================================
+   RESTART
+   ============================================================ */
+function restartTest() {
+  clearState();
+  showScreen('landing-screen');
+  document.querySelector('.btn-start').innerHTML = '🚀 পরীক্ষা শুরু করুন';
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
